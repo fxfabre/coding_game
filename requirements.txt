@@ -9,6 +9,7 @@ attrs==18.2.0             # via pytest
 click==7.0                # via pip-tools
 funcsigs==1.0.2           # via pytest
 more-itertools==5.0.0     # via pytest
+numpy==1.16.1
 pathlib2==2.3.3           # via pytest
 pip-tools==3.4.0
 pluggy==0.9.0             # via pytest
