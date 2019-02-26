@@ -53,20 +53,20 @@ class TestMinimax(unittest.TestCase):
 
     def test_depth_1_game(self):
         score, visited_nodes = Minimax([-2, -1, 3, 0], 4).run()
-        assert score == 3
-        assert visited_nodes == 5
+        self.assertEqual(3, score)
+        self.assertEqual(5, visited_nodes)
 
     def test_depth_2_no_cutoffs(self):
         score, visited_nodes = Minimax([1, 2, 3, 4], 2).run()
-        assert score == 3
-        assert visited_nodes == 7
+        self.assertEqual(3, score)
+        self.assertEqual(7, visited_nodes)
 
     def test_depth_2_cutoffs(self):
         score, visited_nodes = Minimax([1, 2, 0, 4], 2).run()
-        assert score == 1
-        assert visited_nodes == 6
+        self.assertEqual(1, score)
+        self.assertEqual(6, visited_nodes)
 
     def test_small_game(self):
         score, visited_nodes = Minimax([-1, 0, 2, 666, -3, -2, 666, 666], 2).run()
-        assert score == 0
-        assert visited_nodes == 11
+        self.assertEqual(0, score)
+        self.assertEqual(11, visited_nodes)
