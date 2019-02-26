@@ -16,32 +16,42 @@ class Minimax:
         self.count_cells_evaluated = 0
 
     def run(self):
-        score = self._minimax(self.leaves, MINUS_INF, INF, True)
+        score = self.max(self.leaves, MINUS_INF, INF)
         return score, self.count_cells_evaluated
 
-    def _minimax(self, leaves: List[float], alpha: float, beta: float, maximize: bool):
+    def get_child_leaves(self, leaves: List[float]):
+        packet_size = len(leaves) // self.branch_factor
+        return [leaves[i * packet_size: (i + 1) * packet_size] for i in range(self.branch_factor)]
+
+    def max(self, leaves: List[float], alpha: float, beta: float):
         self.count_cells_evaluated += 1
 
         if len(leaves) == 1:
             return leaves[0]
 
-        packet_size = len(leaves) // self.branch_factor
-        childs_leaves = [leaves[i * packet_size: (i + 1) * packet_size] for i in range(self.branch_factor)]
+        childs_leaves = self.get_child_leaves(leaves)
 
-        if maximize:
-            max_score = MINUS_INF
-            for child_leaves in childs_leaves:
-                child_score = self._minimax(child_leaves, alpha, beta, False)
-                max_score = max(max_score, child_score)
-                alpha = max(alpha, child_score)
-                if beta <= alpha:
-                    break
+        max_score = MINUS_INF
+        for child_leaves in childs_leaves:
+            child_score = self.min(child_leaves, alpha, beta)
+            max_score = max(max_score, child_score)
+            alpha = max(alpha, child_score)
+            if beta <= alpha:
+                break
 
-            return max_score
+        return max_score
+
+    def min(self, leaves: List[float], alpha: float, beta: float):
+        self.count_cells_evaluated += 1
+
+        if len(leaves) == 1:
+            return leaves[0]
+
+        childs_leaves = self.get_child_leaves(leaves)
 
         min_score = INF
         for child_leaves in childs_leaves:
-            child_score = self._minimax(child_leaves, alpha, beta, True)
+            child_score = self.max(child_leaves, alpha, beta)
             min_score = min(min_score, child_score)
             beta = min(beta, child_score)
             if beta <= alpha:
