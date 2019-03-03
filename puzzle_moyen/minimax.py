@@ -80,3 +80,12 @@ class TestMinimax(unittest.TestCase):
         score, visited_nodes = Minimax([-1, 0, 2, 666, -3, -2, 666, 666], 2).run()
         self.assertEqual(0, score)
         self.assertEqual(11, visited_nodes)
+
+
+def main():
+    d, b = [int(i) for i in input().split()]
+    leaves = [int(i) for i in input().split(' ')]
+
+    score, visited_nodes = Minimax(leaves, b).run()
+
+    print(score, visited_nodes)
