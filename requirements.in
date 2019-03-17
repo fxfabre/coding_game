@@ -1,4 +1,5 @@
 pytest
 pip-tools
 numpy
+jupyterlab
 
