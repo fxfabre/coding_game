@@ -117,3 +117,4 @@ def main():
 
     array = np.array(all_values).reshape([nb_rows, nb_cols])
     return Labyrinthe(array, nb_cols, nb_rows).count_path()
+
