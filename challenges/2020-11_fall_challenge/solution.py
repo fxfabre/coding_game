@@ -7,24 +7,21 @@ Sinon on lance un sort qui permet de diminuer le nombre d'ingredients d'écart a
 le sort le plus facile à lancer (qui requiert le moins d'ingredients supplémentaire)
 """
 
-import sys
-import math
 from time import time
-from collections import namedtuple
-from itertools import count, chain
-import pandas as pd
-from pprint import pprint
-from typing import Dict, Tuple, List, Optional
+from itertools import count
+from copy import copy
+from typing import Dict, Tuple, List, Optional, NamedTuple, Iterator, Iterable
 from operator import itemgetter
-import random
+from dataclasses import dataclass
 
-from user_state import Action, Witch, BrewAction, CastAction
+from mcts import MCTreeSearch, IState
+from user_state import Action, Witch, BrewAction, CastAction, LearnAction
 
 BUILDERS = {
     "BREW": BrewAction,
     "CAST": CastAction,
     "OPPONENT_CAST": Action,
-    "LEARN": Action
+    "LEARN": LearnAction
 }
 
 
@@ -33,7 +30,7 @@ def read_actions() -> Dict[str, List[Action]]:
     actions = {
         "CAST": [],
         # "OPPONENT_CAST": [],
-        # "LEARN": [],
+        "LEARN": [],
         "BREW": []
     }
     for i in range(action_count):
@@ -41,7 +38,7 @@ def read_actions() -> Dict[str, List[Action]]:
         if action_type in actions.keys():
             action = BUILDERS[action_type](
                 (int(delta_0), int(delta_1), int(delta_2), int(delta_3)), int(price), int(action_id),
-                int(tome_index), int(tax_count), castable != "0", repeatable != "0",
+                int(tome_index), int(tax_count), castable != "0", int(repeatable != "0"),
             )
             actions[action_type].append(action)
 
@@ -59,22 +56,18 @@ def read_actions() -> Dict[str, List[Action]]:
 
 
 def main():
-    while True:
+    for i in count(0):
         start = time()
         all_actions = read_actions()
 
         me = Witch.read_input()
         other = Witch.read_input()
 
-        best_action, score, brew_id = me.recursive_find_best_action(all_actions, 6)
+        best_action, score, brew_id = me.mcts_find_best_action(all_actions, 0)
         if best_action:
-            best_action.doit(round(time() - start, 2), brew_id)
+            best_action.do_it(round(time() - start, 2), brew_id)
         else:
-            best_action = me.heuristique_find_best_action(all_actions)
-            if best_action is None:
-                print("REST", time() - start)
-            else:
-                best_action.doit(round(time() - start, 2), "heuristic")
+            print("REST", time() - start)
 
 
 if __name__ == '__main__':
